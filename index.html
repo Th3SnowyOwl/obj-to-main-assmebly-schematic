@@ -1,71 +1,123 @@
 <html>
-<head>
-<link rel="stylesheet" href="index.css">
-</head>
-<body>
-<h1>OBJ to Main Assembly Schematic</h1><hr>
-	<label for="myFile" class="choosefile">
-  	<i class="fa fa-cloud-upload"></i> Custom Upload
-	</label>
-	<input id="myFile" type="file" onchange="javascript:reader.readAsText(this.files[0]); this.classList.add('hide');document.getElementById('interface').classList.add('show');">
-	<textarea id="input" cols="80" rows="20" class="show" readonly>OBJ content will appear here</textarea>
-	<div id="interface" class="hide">Scale to use: <input value="10" id="scale" size="5"> (should know your own model well enough for this)<br>
-	Build Schematic with Frames (lower fps): <input type="checkbox" id="useFrames"> - NOT WORKING MUST FIX DONT USE<br>
-	Round Vertices to Nearest Unit (after scale is applied): <input type="checkbox" id="useRounding" checked><br>
-	Color Palette: &nbsp;&nbsp;&nbsp;1 <input type="color" value="#00bbff" id="colorP"> &nbsp;&nbsp;&nbsp;2 <input type="color" value="#dddddd" id="colorS"> &nbsp;&nbsp;&nbsp;3 <input type="color" value="#222222" id="colorA"><br>
-	<button onclick="convert();document.getElementById('dlbtn').classList.remove('hide');">Do the thing!</button>
-	</div>
-	<form target="_blank" action="https://jereff.com/dl.php" method="post" id="hidform">
-	<textarea id="output" name="fileval" cols="80" rows="40" class="hide">Main Assembly Schematic will appear here</textarea>
-	<input type="hidden" name="filename" value="schematic.json">
-	</form>
-	<button onclick="document.getElementById('hidform').submit();" id="dlbtn" class="hide">Download Schematic File</button>
-<script>
-function convert() {
-	var input = document.getElementById("input").value.split("\n");
-	var scale = parseInt(document.getElementById("scale").value); if (scale == NaN) {scale = 100;}
-	var pointsForPairing = []; // only needed for frames
-	var pointnum = 1;
-	var facenum = 1;
-	var jSONout = { "points": {}, "frameSegments": {}, "framePlates": {}, "mirror": "MirrorNone", "locked": false };
-	var temp = "";
 
-	for (x = 0; x < input.length; x++) {
+  <head>
+    <link rel="stylesheet" href="index.css">
+  </head>
 
-		// if OBJ line is vertex
-		if (input[x].charAt(0) == "v") {
-			temp = input[x].split(" "); // v -5.6568963e-2 -5.6569001e-2 0.00000000
-			if ( document.getElementById("useRounding").checked == true  ) {
-				jSONout.points[""+pointnum+""] = { "x": Math.round(temp[1]*scale), "y": Math.round(temp[2]*scale), "z": Math.round(temp[3]*scale) };
-			}
-			else {
-				jSONout.points[""+pointnum+""] = { "x": temp[1]*scale, "y": temp[2]*scale, "z": temp[3]*scale };
+  <body>
+    <h1>OBJ to Main Assembly Schematic</h1>
+    <hr>
+    <label for="myFile" class="choosefile">
+      <i class="fa fa-cloud-upload"></i> Custom Upload
+    </label>
+    <input id="myFile" type="file" onchange="javascript:reader.readAsText(this.files[0]); this.classList.add('hide');document.getElementById('interface').classList.add('show');">
+    <textarea id="input" cols="80" rows="20" class="show" readonly>OBJ content will appear here</textarea>
+    <div id="interface" class="hide">Scale to use: <input value="10" id="scale" size="5"> (should know your own model well enough for this)<br>
+      Build Schematic with Frames (lower fps): <input type="checkbox" id="useFrames"> - NOT WORKING MUST FIX DONT USE<br>
+      Round Vertices to Nearest Unit (after scale is applied): <input type="checkbox" id="useRounding" checked><br>
+      Color Palette: &nbsp;&nbsp;&nbsp;1 <input type="color" value="#00bbff" id="colorP"> &nbsp;&nbsp;&nbsp;2 <input type="color" value="#dddddd" id="colorS"> &nbsp;&nbsp;&nbsp;3 <input type="color" value="#222222" id="colorA"><br>
+      <button onclick="convert();document.getElementById('dlbtn').classList.remove('hide');">Do the thing!</button>
+    </div>
+    <form target="_blank" action="https://jereff.com/dl.php" method="post" id="hidform">
+      <textarea id="output" name="fileval" cols="80" rows="40" class="hide">Main Assembly Schematic will appear here</textarea>
+      <input type="hidden" name="filename" value="schematic.json">
+    </form>
+    <button onclick="document.getElementById('hidform').submit();" id="dlbtn" class="hide">Download Schematic File</button>
+    <script>
+      function convert() {
+        var input = document.getElementById("input").value.split("\n");
+        var scale = parseInt(document.getElementById("scale").value);
+        if (scale == NaN) {
+          scale = 100;
+        }
+        var pointsForPairing = []; // only needed for frames
+        var pointnum = 1;
+        var facenum = 1;
+        var jSONout = {
+          "points": {},
+          "frameSegments": {},
+          "framePlates": {},
+          "mirror": "MirrorNone",
+          "locked": false
+        };
+        var temp = "";
 
-			}
+        for (x = 0; x < input.length; x++) {
 
-			pointsForPairing.push(pointnum); // only needed for frames
-			pointnum++;
-		}
-		// if OBJ line is face
-		if (input[x].charAt(0) == "f") { // f 1/4/1 4/8/4 2/3/2 (vertex/texture/normal)
-			temp = input[x].split(" "); 
-			for (y = 1; y < temp.length; y++) { temp[y] = temp[y].split("/"); }
-			jSONout.framePlates[""+facenum+""] = { "points": [], "visible": true, "properties": { "values": { "material": { "tag": "EProperty_String", "string": "plastic" } } } };
-			for (y = 1; y < temp.length; y++) { jSONout.framePlates[""+facenum+""]["points"].push({ "elemId": (temp[y][0]*1) }); }
-			facenum++;
-		}
-	}
+          // if OBJ line is vertex
+          if (input[x].charAt(0) == "v") {
+            temp = input[x].split(" "); // v -5.6568963e-2 -5.6569001e-2 0.00000000
+            if (document.getElementById("useRounding").checked == true) {
+              jSONout.points["" + pointnum + ""] = {
+                "x": Math.round(temp[1] * scale),
+                "y": Math.round(temp[2] * scale),
+                "z": Math.round(temp[3] * scale)
+              };
+            } else {
+              jSONout.points["" + pointnum + ""] = {
+                "x": temp[1] * scale,
+                "y": temp[2] * scale,
+                "z": temp[3] * scale
+              };
+
+            }
+
+            pointsForPairing.push(pointnum); // only needed for frames
+            pointnum++;
+          }
+          // if OBJ line is face
+          if (input[x].charAt(0) == "f") { // f 1/4/1 4/8/4 2/3/2 (vertex/texture/normal)
+            temp = input[x].split(" ");
+            for (y = 1; y < temp.length; y++) {
+              temp[y] = temp[y].split("/");
+            }
+            jSONout.framePlates["" + facenum + ""] = {
+              "points": [],
+              "visible": true,
+              "properties": {
+                "values": {
+                  "material": {
+                    "tag": "EProperty_String",
+                    "string": "plastic"
+                  }
+                }
+              }
+            };
+            for (y = 1; y < temp.length; y++) {
+              jSONout.framePlates["" + facenum + ""]["points"].push({
+                "elemId": (temp[y][0] * 1)
+              });
+            }
+            facenum++;
+          }
+        }
 
 
 
-if ( document.getElementById("useFrames").checked == true  ) {
-/**/// include this for frames between all points
-	var edgePairs = pairwise(pointsForPairing);
-	for (var z = 0; z < edgePairs.length; z++) {
-		jSONout.frameSegments[""+z+""] = { "first": { "elemId": edgePairs[z][0] }, "second": { "elemId": edgePairs[z][1] }, "visible": true, "properties": { "values": { "material": { "tag": "EProperty_String", "string": "plastic" } } }  };
-	}
-/**/
-}
+        if (document.getElementById("useFrames").checked == true) {
+          /**/ // include this for frames between all points
+          var edgePairs = pairwise(pointsForPairing);
+          for (var z = 0; z < edgePairs.length; z++) {
+            jSONout.frameSegments["" + z + ""] = {
+              "first": {
+                "elemId": edgePairs[z][0]
+              },
+              "second": {
+                "elemId": edgePairs[z][1]
+              },
+              "visible": true,
+              "properties": {
+                "values": {
+                  "material": {
+                    "tag": "EProperty_String",
+                    "string": "plastic"
+                  }
+                }
+              }
+            };
+          }
+          /**/
+        }
 
 
 
@@ -73,38 +125,40 @@ if ( document.getElementById("useFrames").checked == true  ) {
 
 
 
-//output the final schematic
-document.getElementById("output").value = "[1, 1, 2]\n{\n\t\"palette\": \"user_02\",\n\t\"customPalette\": {\n\t\t\"useCustomPalette\": true,\n\t\t\"displayName\": \"\",\n\t\t\"primary\": {\n\t\t\t\"r\": "+parseInt(document.getElementById("colorP").value.match(/[A-Za-z0-9]{2}/g)[0], 16)+",\n\t\t\t\"g\": "+parseInt(document.getElementById("colorP").value.match(/[A-Za-z0-9]{2}/g)[1], 16)+",\n\t\t\t\"b\": "+parseInt(document.getElementById("colorP").value.match(/[A-Za-z0-9]{2}/g)[2], 16)+",\n\t\t\t\"a\": 255\n\t\t},\n\t\t\"secondary\": {\n\t\t\t\"r\": "+parseInt(document.getElementById("colorS").value.match(/[A-Za-z0-9]{2}/g)[0], 16)+",\n\t\t\t\"g\": "+parseInt(document.getElementById("colorS").value.match(/[A-Za-z0-9]{2}/g)[1], 16)+",\n\t\t\t\"b\": "+parseInt(document.getElementById("colorS").value.match(/[A-Za-z0-9]{2}/g)[2], 16)+",\n\t\t\t\"a\": 255\n\t\t},\n\t\t\"accent\": {\n\t\t\t\"r\": "+parseInt(document.getElementById("colorA").value.match(/[A-Za-z0-9]{2}/g)[0], 16)+",\n\t\t\t\"g\": "+parseInt(document.getElementById("colorA").value.match(/[A-Za-z0-9]{2}/g)[1], 16)+",\n\t\t\t\"b\": "+parseInt(document.getElementById("colorA").value.match(/[A-Za-z0-9]{2}/g)[2], 16)+",\n\t\t\t\"a\": 255\n\t\t}\n\t},\n\n\t\"kits\": { },\n\t\"kitDisplayName\": \"\",\n\t\"kitDisplayDescription\": \"\",\n\t\"kitIconName\": \"\",\n\t\"parts\": {\n\t\t\"Frame_FL_0000\": {\n\t\t\t\"parent\": \"None\",\n\t\t\t\"attachment\": {\n\t\t\t\t\"mirrored\": false,\n\t\t\t\t\"myPoint\": {\n\t\t\t\t\t\"frameElement\": {\n\t\t\t\t\t\t\"typeId\": \"FE_Plate\",\n\t\t\t\t\t\t\"frameIndex\": 3,\n\t\t\t\t\t\t\"elemId\": 1,\n\t\t\t\t\t\t\"refl\": false\n\t\t\t\t\t},\n\t\t\t\t\t\"frameParameter\": { \"x\": 0.5, \"y\": 0.5, \"z\": 1 }\n\t\t\t\t},\n\t\t\t\t\"parentPoint\": { }\n\t\t\t},\n\t\t\t\"type\": \"PT_Frame\",\n\t\t\t\"key\": { \"frameIndex\": 3 },\n\t\t\t\"reflection\": \"None\"\n\t\t} },\n\t\"frames\": {\n\t\t\"3\": \n\n"+JSON.stringify(jSONout)+"\n},\n\n\t\"wires\": [],\n\t\"processors\": { },\n\t\"totalMass\": 668.124755859375,\n\t\"numberOfParts\": 1\n}";
+        //output the final schematic
+        document.getElementById("output").value = "[1, 1, 2]\n{\n\t\"palette\": \"user_02\",\n\t\"customPalette\": {\n\t\t\"useCustomPalette\": true,\n\t\t\"displayName\": \"\",\n\t\t\"primary\": {\n\t\t\t\"r\": " + parseInt(document.getElementById("colorP").value.match(/[A-Za-z0-9]{2}/g)[0], 16) + ",\n\t\t\t\"g\": " + parseInt(document.getElementById("colorP").value.match(/[A-Za-z0-9]{2}/g)[1], 16) + ",\n\t\t\t\"b\": " + parseInt(document.getElementById("colorP").value.match(/[A-Za-z0-9]{2}/g)[2], 16) + ",\n\t\t\t\"a\": 255\n\t\t},\n\t\t\"secondary\": {\n\t\t\t\"r\": " + parseInt(document.getElementById("colorS").value.match(/[A-Za-z0-9]{2}/g)[0], 16) + ",\n\t\t\t\"g\": " + parseInt(document.getElementById("colorS").value.match(/[A-Za-z0-9]{2}/g)[1], 16) + ",\n\t\t\t\"b\": " + parseInt(document.getElementById("colorS").value.match(/[A-Za-z0-9]{2}/g)[2], 16) + ",\n\t\t\t\"a\": 255\n\t\t},\n\t\t\"accent\": {\n\t\t\t\"r\": " + parseInt(document.getElementById("colorA").value.match(/[A-Za-z0-9]{2}/g)[0], 16) + ",\n\t\t\t\"g\": " + parseInt(document.getElementById("colorA").value.match(/[A-Za-z0-9]{2}/g)[1], 16) + ",\n\t\t\t\"b\": " + parseInt(document.getElementById("colorA").value.match(/[A-Za-z0-9]{2}/g)[2], 16) + ",\n\t\t\t\"a\": 255\n\t\t}\n\t},\n\n\t\"kits\": { },\n\t\"kitDisplayName\": \"\",\n\t\"kitDisplayDescription\": \"\",\n\t\"kitIconName\": \"\",\n\t\"parts\": {\n\t\t\"Frame_FL_0000\": {\n\t\t\t\"parent\": \"None\",\n\t\t\t\"attachment\": {\n\t\t\t\t\"mirrored\": false,\n\t\t\t\t\"myPoint\": {\n\t\t\t\t\t\"frameElement\": {\n\t\t\t\t\t\t\"typeId\": \"FE_Plate\",\n\t\t\t\t\t\t\"frameIndex\": 3,\n\t\t\t\t\t\t\"elemId\": 1,\n\t\t\t\t\t\t\"refl\": false\n\t\t\t\t\t},\n\t\t\t\t\t\"frameParameter\": { \"x\": 0.5, \"y\": 0.5, \"z\": 1 }\n\t\t\t\t},\n\t\t\t\t\"parentPoint\": { }\n\t\t\t},\n\t\t\t\"type\": \"PT_Frame\",\n\t\t\t\"key\": { \"frameIndex\": 3 },\n\t\t\t\"reflection\": \"None\"\n\t\t} },\n\t\"frames\": {\n\t\t\"3\": \n\n" + JSON.stringify(jSONout) + "\n},\n\n\t\"wires\": [],\n\t\"processors\": { },\n\t\"totalMass\": 668.124755859375,\n\t\"numberOfParts\": 1\n}";
 
-//show/hide elements
-document.getElementById("output").classList.remove("hide");
-document.getElementById("output").classList.add("show");
-document.getElementById("input").classList.remove("show");
-document.getElementById("input").classList.add("hide");
-document.getElementById("interface").classList.remove("show");
-document.getElementById("interface").classList.add("hide");
+        //show/hide elements
+        document.getElementById("output").classList.remove("hide");
+        document.getElementById("output").classList.add("show");
+        document.getElementById("input").classList.remove("show");
+        document.getElementById("input").classList.add("hide");
+        document.getElementById("interface").classList.remove("show");
+        document.getElementById("interface").classList.add("hide");
 
-}
+      }
 
-function pairwise(list) {
-  var pairs = [];
-  list
-    .forEach(function (first, n) {
-      var tail = list.slice(n + 1, list.length);
-      tail.forEach(function (item) {
-        pairs.push([first, item])
-      });
-    })
-  return pairs;
-}
-//pairwise('abcd'.split(''))
-// [["a","b"],["a","c"],["a","d"],["b","c"],["b","d"],["c","d"]]
+      function pairwise(list) {
+        var pairs = [];
+        list
+          .forEach(function(first, n) {
+            var tail = list.slice(n + 1, list.length);
+            tail.forEach(function(item) {
+              pairs.push([first, item])
+            });
+          })
+        return pairs;
+      }
+      //pairwise('abcd'.split(''))
+      // [["a","b"],["a","c"],["a","d"],["b","c"],["b","d"],["c","d"]]
 
-var reader = new FileReader();
-reader.onload = function (e) {
-    var textArea = document.getElementById("input");
-    textArea.value = e.target.result;
-};
-</script>
-</body>
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var textArea = document.getElementById("input");
+        textArea.value = e.target.result;
+      };
+
+    </script>
+  </body>
+
 </html>
