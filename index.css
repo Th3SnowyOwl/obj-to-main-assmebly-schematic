@@ -1,0 +1,54 @@
+body { color: #eee; background-color: #121415; font-family: sans-serif; font-size: 16px; }
+h1 { margin: 0; }
+textarea { font-family: monospace; }
+textarea, input, button {
+  background-color: #333330;
+  border: none;
+  color: white;
+  text-decoration: none;
+  margin: 4px 2px;
+}
+.choosefile {
+	background-color:#ffec64;
+	padding:6px 24px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+	font-size:16px;
+	color:#333333;
+	font-family:Arial;
+	border-radius:6px;
+	border:1px solid #ffaa22;
+	display:inline-block;
+	box-shadow: 0px 1px 0px 0px #fff6af;
+	background:linear-gradient(to bottom, #ffec64 5%, #ffab23 100%);
+	text-shadow:0px 1px 0px #ffee66;
+	&:hover {
+	background:linear-gradient(to bottom, #ffab23 5%, #ffec64 100%);
+	background-color:#ffab23;
+}
+button {
+  background-color: #23b418;
+  padding: 10px 10px;
+  text-align: center;
+  font-weight: bold;
+  cursor: pointer;
+}
+ &:active {
+	position:relative;
+	top:1px;
+}
+}
+.buttonimage {
+    width: 150px;
+    height: 150px;
+    background-image: url(https://raw.githubusercontent.com/Th3SnowyOwl/obj-to-main-assmebly-schematic/main/media/buttonbg.png);
+    background-repeat: no-repeat;
+}
+}
+.hide {
+	display: none !important; 
+}
+.show {
+	display: block !important; 
+}
