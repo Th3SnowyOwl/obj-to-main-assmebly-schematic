@@ -11,7 +11,7 @@
       <i class="fa fa-cloud-upload"></i> ☁ Custom Upload
     </label>
     <input id="myFile" type="file" onchange="javascript:reader.readAsText(this.files[0]); this.classList.add('hide');document.getElementById('interface').classList.add('show');">
-    <textarea id="input" cols="80" rows="20" class="show" readonly>OBJ content will appear here</textarea>
+    <textarea id="input" cols="80" rows="20" class="show, textbox" readonly>OBJ content will appear here</textarea>
     <div id="interface" class="hide">Scale to use: <input value="10" id="scale" size="5"> (should know your own model well enough for this)<br>
       Build Schematic with Frames (lower fps): <input type="checkbox" id="useFrames"> - NOT WORKING MUST FIX DONT USE<br>
       Round Vertices to Nearest Unit (after scale is applied): <input type="checkbox" id="useRounding" checked><br>
