@@ -40,8 +40,8 @@ button {
   cursor: pointer;
 }
 .buttonimage {
-    width: 150px;
-    height: 150px;
+    width: 50px;
+    height: 15px;
     background-image: url(https://raw.githubusercontent.com/Th3SnowyOwl/obj-to-main-assmebly-schematic/main/media/buttonbg.png);
     background-repeat: no-repeat;
 }
