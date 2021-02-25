@@ -37,6 +37,17 @@ input[type="file"] {
   border-radius: 7px;
 }
 
+.textbox1 {
+  padding: 5px;
+  border-width: 7px;
+  border-color: #4c90d0;
+  background-color: #585858;
+  color: #ffffff;
+  border-style: solid;
+  border-radius: 7px;
+  display: none !important;
+}
+
 .choosefile {
   background-color: #ffec64;
   padding: 6px 24px;
