@@ -20,7 +20,7 @@
       <button onclick="convert();document.getElementById('dlbtn').classList.remove('hide');">Do the thing!</button>
     </div>
     <form target="_blank" action="download.php" method="post" id="hidform">
-      <textarea id="output" name="fileval" cols="80" rows="40" class="hide, textbox1">Main Assembly Schematic will appear here</textarea>
+      <textarea id="output" name="fileval" cols="80" rows="40" class="hide">Main Assembly Schematic will appear here</textarea>
       <input type="hidden" name="filename" value="schematic.json">
     </form>
     <button onclick="document.getElementById('hidform').submit();" id="dlbtn" class="hide">Download Schematic File</button>
